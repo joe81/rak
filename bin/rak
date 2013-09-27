@@ -115,6 +115,13 @@ END
     end
   end
 
+  def self.defaults(arg)
+    if defaults = ENV['RAK_DEFAULTS']
+      defaults = Hash[*(defaults.split)]
+      defaults[arg]
+    end
+  end
+
   def self.search
     @opt = {}
 
@@ -134,6 +141,7 @@ END
         end
       end
     end
+
 
       opts = GetoptLong.new(
                             [ '--help', GetoptLong::OPTIONAL_ARGUMENT ],
@@ -204,7 +212,7 @@ END
     opt[:before_context] = 0
     opt[:collect_context] = false
     opt[:filename_regex] = nil
-    opt[:neg_filename_regex] = nil
+    opt[:neg_filename_regex] = compile_regexp(defaults('-k')) rescue nil
     opt[:reverse_relevance] = false
     opt[:eval] = nil
 
